@@ -22,8 +22,15 @@ p = zeros(size(X, 1), 1);
 %
 
 
-
-
+% First hidden Layer
+% Add 1 bias input to X 
+a_1 = [ones(m,1) X];
+a_2 = sigmoid(a_1*Theta1');
+% Output Layer
+a_2 = [ones(m,1), a_2];
+a_3 = sigmoid(a_2*Theta2');
+[max_val, indx] = max(a_3, [], 2);
+p = indx;
 
 
 

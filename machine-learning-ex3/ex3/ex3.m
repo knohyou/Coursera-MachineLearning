@@ -54,7 +54,7 @@ pause;
 
 % Test case for lrCostFunction
 fprintf('\nTesting lrCostFunction() with regularization');
-
+ 
 theta_t = [-2; -1; 1; 2];
 X_t = [ones(5,1) reshape(1:15,5,3)/10];
 y_t = ([1;0;1;0;1] >= 0.5);
