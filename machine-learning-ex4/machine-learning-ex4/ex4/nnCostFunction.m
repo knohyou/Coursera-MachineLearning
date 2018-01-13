@@ -65,10 +65,54 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
+%% Feedforward Algorithm
+a_1 = [ones(m,1), X];
+a_2 = sigmoid(a_1*Theta1');
+a_2 = [ones(m,1), a_2];
+a_3 = sigmoid(a_2*Theta2');
+
+gradient_L = zeros(m,num_labels);
+gradient_2 = zeros(m,hidden_layer_size+1);
+delta_1 = zeros(size(Theta1));
+delta_2 = zeros(size(Theta2));
+J_vec = zeros(m,1);
+for i = 1:m
+  y_vec = zeros(num_labels,1);
+  y_vec(y(i)) = 1;
+   
+  J_vec(i) = 1/m*(-y_vec'*log(a_3(i,:))' - (1-y_vec)'*log(1-a_3(i,:))');
+  
+  gradient_L(i,:) = a_3(i,:) - y_vec';
+  gradient_2(i,:) = (Theta2(:,1:end)'*gradient_L(i,:)')'.*a_2(i,1:end).*(1-a_2(i,1:end));
+  delta_2 = delta_2 + gradient_L(i,:)'*a_2(i,1:end);
+  delta_1 = delta_1 + gradient_2(i,2:end)'*a_1(i,1:end);
+end
+
+Theta2_grad = 1/m*delta_2; %10x26
+Theta1_grad = 1/m*delta_1; %25x401
 
 
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + lambda/m*Theta2(:,2:end);
+
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + lambda/m*Theta1(:,2:end);
+
+% Theta1_grad 25 by 401
+% gradient2 5000 by 26
+% a_1 5000 by 401
+%Theta2_grad 10by26
+%gradient_L 5000x10
+%a_2 5000*26
+%26 by 10 1 x 10)
+%26 x 1
 
 
+% Note first column of theta is the bias vector
+reg = lambda/(2*m)*(sum(sum(Theta1(1:hidden_layer_size, 2:input_layer_size+1).^2)) ... 
+    + sum(sum(Theta2(1:num_labels,2:hidden_layer_size+1).^2)));
+
+J = sum(J_vec) + reg;
+
+%% Backpropagation Algorithm
 
 
 
